@@ -1,5 +1,7 @@
 import * as express from 'express';
 
+import { redisClient } from '../redisClient';
+
 import { getTasks, getTaskById, getTaskByFilter, deleteTaskById, createTask, updateTaskById } from '../db/tasks';
 
 export const createNewTask = async (req: express.Request, res: express.Response) =>{
@@ -17,6 +19,7 @@ export const createNewTask = async (req: express.Request, res: express.Response)
         }
 
         const task = await createTask({id, title, description, dueDate, status, assigneeUserName});
+        redisClient.set(id, JSON.stringify(task));
         return res.status(200).json(task).end();
     } catch (error) {
         console.log(error);
@@ -32,7 +35,13 @@ export const deleteTask = async (req: express.Request, res: express.Response) =>
             return res.sendStatus(400); 
         }
 
-        const existingTask = getTaskById(tid);
+        let existingTask = redisClient.get(tid).then((response =>{
+            console.log(response);
+            return JSON.parse(response);
+        }));
+        if (!existingTask) {
+            existingTask = getTaskById(tid);
+        }
         if(!existingTask){
             console.log('task with this id do not exist');
             return res.sendStatus(400); 
@@ -82,12 +91,20 @@ export const updateTask = async (req: express.Request, res: express.Response) =>
             return res.sendStatus(400);
         }
 
-        const existingTask = getTaskById(tid);
+        let existingTask = redisClient.get(tid).then((response =>{
+            console.log(response);
+            return JSON.parse(response);
+        }));
+        if (!existingTask) {
+            existingTask = getTaskById(tid);
+        }
+        
         if(!existingTask){
             console.log('task with this id do not exist');
             return res.sendStatus(400); 
         }
         await updateTaskById(tid, {id, title, description, dueDate, status, assigneeUserName} );
+        getTaskById(tid).then(task => redisClient.set(tid, JSON.stringify(task)));
         return res.status(200).end();
     } catch (error) {
         console.log(error);

@@ -6,6 +6,7 @@ import * as compression from 'compression';
 import * as cors from 'cors';
 import * as mongoose from 'mongoose';
 import router from './router';
+import { redisClient } from './redisClient';
 
 const { MONGODB_URL } = require('../config');
 
@@ -28,7 +29,15 @@ server.listen(8080, () =>{
 const mongo_url = MONGODB_URL;
 mongoose.connect(mongo_url).then(() =>{
     console.log('MongoDB is connected ...')
+}).catch((err) =>{
+    console.log("error :", err);
 });
 mongoose.connection.on('error', (error: Error) => console.log(error));
+
+redisClient.connect().then(()=>{
+    console.log("Redis connected ...")
+}).catch((err) =>{
+    console.log("error :", err);
+})
 
 app.use('/', router());
