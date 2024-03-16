@@ -1,0 +1,11 @@
+{
+    "compilerOptions": {
+        "module": "CommonJS",
+        "moduleResolution": "Node",
+        "baseUrl": "src",
+        "outDir": "public",
+        "sourceMap": true,
+        "noImplicitAny": true
+    },
+    "include": ["src/**/*"]
+}
