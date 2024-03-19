@@ -48,6 +48,7 @@ export const deleteTask = async (req: express.Request, res: express.Response) =>
         }
 
         await deleteTaskById(tid);
+        redisClient.del(tid, null);
         return res.status(200).end();
     } catch (error) {
         console.log(error);
