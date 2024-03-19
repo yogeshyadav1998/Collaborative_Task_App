@@ -7,6 +7,6 @@ export default (router: express.Router) => {
     router.post('/task', isAuthenticated, createNewTask);
     router.delete('/task/:tid', isAuthenticated, deleteTask);
     router.get('/task', isAuthenticated, getAllTask);
-    router.patch('/task', isAuthenticated, getFilteredTask);
+    router.post('/filter', isAuthenticated, getFilteredTask);
     router.put('/task/:tid', isAuthenticated, updateTask);
 };
