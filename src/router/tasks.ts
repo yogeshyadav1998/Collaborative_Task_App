@@ -4,9 +4,9 @@ import { createNewTask, deleteTask, getAllTask, getFilteredTask, updateTask } fr
 import { isAuthenticated } from '../middlewares';
 
 export default (router: express.Router) => {
-    router.post('/task/createTask', isAuthenticated, createNewTask);
-    router.get('/task/deleteTask/:tid', isAuthenticated, deleteTask);
-    router.get('/tasks', isAuthenticated, getAllTask);
-    router.post('/filteredTasks', isAuthenticated, getFilteredTask);
-    router.post('/task/update/:tid', isAuthenticated, updateTask);
+    router.post('/task', isAuthenticated, createNewTask);
+    router.delete('/task/:tid', isAuthenticated, deleteTask);
+    router.get('/task', isAuthenticated, getAllTask);
+    router.post('/filterTasks', isAuthenticated, getFilteredTask);
+    router.put('/task/:tid', isAuthenticated, updateTask);
 };
